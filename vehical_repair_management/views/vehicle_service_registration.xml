@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="service_image_form" model="ir.ui.view">
+            <field name="name">vehicle.service.image.form</field>
+            <field name="model">vehicle.service.image</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Vehicle Image Form">
+                    <sheet>
+                        <group>
+                            <field name="image" widget="image" class="oe_avatar"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="service_registration_tree" model="ir.ui.view">
+            <field name="name">vehicle.repair.work.order.tree</field>
+            <field name="model">vehicle.repair.work.order</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Service Registration">
+                    <field name="name"/>
+                    <field name="plate_no"/>
+                    <field name="customer_id"/>
+                    <field name="phone"/>
+                    <field name="date"/>
+                    <field name="repair_team_ids" widget="many2many_tags"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="service_registration_form" model="ir.ui.view">
+            <field name="name">vehicle.repair.work.order.form</field>
+            <field name="model">vehicle.repair.work.order</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Registration Form">
+                    <header>
+                        <button name="confirm_service" states="draft" type="object" string="Confirm Service"
+                                class="btn-primary"/>
+                        <button name="button_done" states="confirm" type="object" string="Under Process"
+                                class="btn-primary"/>
+                        <button name="button_draft" states="cancel" type="object" string="Set To Draft"/>
+                        <button name="button_finish" states="under_process" type="object" string="Finish Service"
+                                class="btn-primary"/>
+                        <button name="button_cancel" states="draft,confirm" type="object" string="Cancel Service"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" groups="base.group_user" >
+                            <button name="sale_order_view" type="object" class="oe_stat_button" states="done"
+                                    icon="fa-pencil-square-o">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_text">Sale Order</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <label for="plate_no"/>
+                        <div style="width:30%">
+                            <field name="plate_no" required="1" attrs="{'readonly': [('state', '=', 'done')]}"
+                                   placeholder="eg. MH12RN1289"/>
+                            <span class="text-success oe_edit_only"
+                                  attrs="{'invisible': ['|','|',('plate_exist', '=', False), ('plate_no', '=', ''), ('plate_no', '=', False)]}">
+                                Vehicle Exist, Details Fetched ✔
+                            </span>
+                            <span class="text-info oe_edit_only"
+                                  attrs="{'invisible': ['|','|', ('plate_exist', '=', True), ('plate_no', '=', ''), ('plate_no', '=', False)]}">
+                                New Vehicle, It will be Saved
+                            </span>
+                        </div>
+
+                        <group>
+                            <group string="Customer" name="customer_id">
+                                <field name="customer_id" required="1" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                <field name="phone" required="1" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                <field name='email' attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                <field name="plate_exist" invisible="1"/>
+                            </group>
+                            <group string="Basic Information" name="basic_info">
+                                <field name="date" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                <field name="delivery_date" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                <field name="vehicle_type_id" options="{'no_open': True}"
+                                       attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                <field name="brand_id" options="{'no_open': True}"
+                                       attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <label for="issue_unknown" string="I Don't Know What Needs To Be Done"/>
+                        <field name="issue_unknown"/>
+                        <div attrs="{'invisible': [('issue_unknown', '=', False)]}">
+                            <span>Not sure what’s wrong? No problem, the Boys have you covered. Just bring your vehicle
+                                in and we’ll take care of the rest.
+                            </span>
+                        </div>
+                        <group string="Issue">
+                            <field name="issue" nolabel="1" attrs="{'readonly': [('state', '=', 'done')]}"
+                                   placeholder="Work Description"/>
+                        </group>
+
+                        <group>
+                            <group>
+                                <field name="service_template_id" options="{'no_open': True}"
+                                       attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                <field name="repair_team_ids"
+                                       attrs="{'readonly': [('state', '=', 'done')]}"
+                                       widget="many2many_tags"/>
+                                <field name="team_member_ids"
+                                       attrs="{'readonly': [('state', '=', 'done')]}"
+                                       widget="many2many_tags" invisible="1"/>
+                            </group>
+                            <group attrs="{'invisible': [('repair_team_ids','&lt;=', 0)]}">
+                                <field name="manager_ids" readonly="1" force_save="1"
+                                       widget="many2many_tags"/>
+                                <field name="priority" widget="priority"/>
+                            </group>
+
+                        </group>
+                        <notebook>
+                            <page string="Work Sheet" name="work"
+                                  attrs="{'invisible': [('repair_team_ids', '&lt;=', 0)]}">
+                                <field name="work_sheet_ids" attrs="{'readonly': [('state', '=', 'done')]}">
+                                    <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="mechanic_id" required="1" options="{'no_open': True}"
+                                               domain="[('is_mechanic','=', True), ('id', 'in', parent.team_member_ids)]"/>
+                                        <field name="service_id" required="1" options="{'no_open': True}"/>
+                                        <field name="description" required="1"/>
+                                        <field name="cost_type" string="Price Type" required="1"/>
+                                        <field name="cost"/>
+                                        <field name="abstract_uom"/>
+                                        <field name="qty"/>
+                                        <field name='time' widget='float_time'/>
+                                        <field name="subtotal" widget="monetary"/>
+                                        <field name="currency_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="repair_order">
+                                    <field name="work_sheet_expense" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="used_part_expense" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="total_repair_untaxed_expense"
+                                               string="Estimated Repair Untaxed Expense"/>
+                                    </div>
+                                    <field name="total_repair_untaxed_expense" nolabel="1"
+                                           class="oe_subtotal_footer_separator"
+                                           widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </group>
+                                <field name="note" class="oe_inline"
+                                       placeholder="Terms and conditions...)"/>
+                                <div class="oe_clear"/>
+                            </page>
+                            <page string="Parts Used" name="part"
+                                  attrs="{'invisible': [('repair_team_ids', '&lt;=', 0)]}">
+                                <field name="used_part_ids" attrs="{'readonly': [('state', '=', 'done')]}">
+                                    <tree editable="bottom">
+                                        <field name="part_id" domain="[('is_part', '=', True)]"/>
+                                        <field name="description" required="1"/>
+                                        <field name="quantity"/>
+                                        <field name="unit_price"/>
+                                        <field name="subtotal"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="repair_order">
+                                    <field name="work_sheet_expense" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="used_part_expense" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="total_repair_untaxed_expense"
+                                               string="Estimated Repair Untaxed Expense"/>
+                                    </div>
+                                    <field name="total_repair_untaxed_expense" nolabel="1"
+                                           class="oe_subtotal_footer_separator"
+                                           widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </group>
+                                <field name="note" class="oe_inline"
+                                       placeholder="Terms and conditions..."/>
+                                <div class="oe_clear"/>
+                            </page>
+
+                            <page string="Vehicle Information" name="vehicle_info">
+                                <group>
+                                    <group>
+                                        <field name="brand_id" attrs="{'readonly': [('state', '=', 'done')]}"
+                                               options="{'no_open': True}"/>
+                                        <field name="model" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <field name="color" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <field name="transmission_type" attrs="{'readonly': [('state', '=', 'done')]}"/>
+
+                                        <field name="year_of_manufacturing"
+                                               attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <field name="warranty_date" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <field name="insurance" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <field name="pollution" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <field name="accomplished_date" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <field name="last_oil_change_date"
+                                               attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <field name="odometer_reading" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                    </group>
+                                    <group>
+                                        <label for="fuel_value"/>
+                                        <div class="o_row">
+                                            <field class="oe_edit_only" name="fuel_value"
+                                                   attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                            <field class="oe_edit_only" name="fuel_gauge_unit"
+                                                   placeholder="eg. % or Liter or Unit etc."
+                                                   attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                            <field class="oe_read_only" name="fuel_gauge"
+                                                   attrs="{'readonly': [('state', '=', 'done')]}"
+                                                   widget="gauge"
+                                                   options="{'label_field': 'fuel_gauge_unit'}"/>
+                                        </div>
+                                        <field name="fuel_type_id" attrs="{'readonly': [('state', '=', 'done')]}"
+                                               options="{'no_open': True}"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="accessories_ids" attrs="{'readonly': [('state', '=', 'done')]}">
+                                        <tree editable="bottom">
+                                            <field name="name"/>
+                                            <field name="quantity"/>
+                                            <field name="description"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group>
+                                    <field name="create_uid" readonly="1"/>
+                                </group>
+                            </page>
+
+                            <page string="Images" name="image">
+                                <h2 style="color:rgb(63, 150, 216)">Before Service</h2>
+                                <field name="before_service_image_ids">
+                                    <kanban string="image">
+                                        <field name="id"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div t-attf-class="oe_kanban_card oe_kanban_global_click"
+                                                     style="width:100px; height:100px;">
+                                                    <div class="o_dropdown_kanban dropdown">
+                                                        <a class="dropdown-toggle btn"  role="button"  data-toggle="dropdown" href="#">
+                                                            <span class="fa fa-ellipsis-v" title="Delete"/>
+                                                        </a>
+                                                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                                            <li>
+                                                                <a type="delete">Delete</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <center>
+                                                        <div class="oe_kanban_global_click">
+                                                            <group col="2">
+                                                                <field name="image" widget="image" width="100px"/>
+                                                            </group>
+                                                        </div>
+                                                    </center>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                                <separator/>
+                                <h2 style="color:rgb(63, 150, 216)">After Service</h2>
+                                <field name="after_service_image_ids">
+                                    <kanban string="image">
+                                        <field name="id"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div t-attf-class="oe_kanban_card oe_kanban_global_click"
+                                                     style="width:100px; height:100px;">
+                                                    <div class="o_dropdown_kanban dropdown">
+                                                        <a class="dropdown-toggle btn" role="button" data-toggle="dropdown" href="#">
+                                                            <span class="fa fa-ellipsis-v" title="Delete"/>
+                                                        </a>
+                                                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                                            <li>
+                                                                <a type="delete">Delete</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <center>
+                                                        <div class="oe_kanban_global_click">
+                                                            <group col="2">
+                                                                <field name="image" widget="image" width="100px"/>
+                                                            </group>
+                                                        </div>
+                                                    </center>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="service_registration_kanban_view" model="ir.ui.view">
+            <field name="name">vehicle.repair.work.order.kanban.view</field>
+            <field name="model">vehicle.repair.work.order</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="customer_id"/>
+                    <field name="total_repair_untaxed_expense"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                    <field name="priority"/>
+                    <field name="currency_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top mb16">
+                                    <div class="o_kanban_record_headings mt4">
+                                        <strong class="o_kanban_record_title">
+                                            <span>
+                                                <t t-esc="record.customer_id.value"/>
+                                            </span>
+                                        </strong>
+                                        <div class="pt-2">
+                                            <field name="priority" widget="priority"/>
+                                        </div>
+                                    </div>
+                                    <strong>
+                                        <field name="total_repair_untaxed_expense" widget="monetary"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left text-muted">
+                                        <span>
+                                            <t t-esc="record.name.value"/>
+                                            <t t-esc="record.date.value"/>
+                                        </span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="state" widget="label_selection"
+                                               options="{'classes': {'draft': 'default', 'cancel': 'default', 'done': 'success'}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <record id="service_registration_search_view" model="ir.ui.view">
+            <field name="name">vehicle.repair.work.order.search.view</field>
+            <field name="model">vehicle.repair.work.order</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="plate_no"/>
+                    <field name="customer_id"/>
+                    <field name="model"/>
+                    <filter name="draft_repair" string="Draft" domain="[('state', '=', 'draft')]"/>
+                    <filter name="confirm_repair" string="Confirmed" domain="[('state', '=', 'confirm')]"/>
+                    <filter name="under_process_repair" string="Under Process"
+                            domain="[('state', '=', 'under_process')]"/>
+                    <filter name="filter_receive_date" date="date" string="Receive Date" default_period="this_week"/>
+                    <filter name="groupby_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="groupby_priority" string="Priority" context="{'group_by': 'priority'}"/>
+                    <filter name="groupby_customer" string="Customer" context="{'group_by': 'customer_id'}"/>
+                    <filter name="groupby_date" string="Received Date" context="{'group_by': 'date'}"/>
+                    <filter name="groupby_plate" string="Plate Number" context="{'group_by': 'plate_no'}"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="view_vehicle_service_report_graph" model="ir.ui.view">
+            <field name="name">vehicle.service.report.graph</field>
+            <field name="model">vehicle.repair.work.order</field>
+            <field name="arch" type="xml">
+                <graph string="Vehicle Service Analysis">
+                    <field name="name"/>
+                    <field name="total_repair_untaxed_expense" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+
+        <record id="view_work_order_pivot" model="ir.ui.view">
+            <field name="name">work.order.pivot</field>
+            <field name="model">vehicle.repair.work.order</field>
+            <field name="arch" type="xml">
+                <pivot string="Vehicle Service Analysis">
+                    <field name="customer_id" type="row"/>
+                    <field name="name" type="row"/>
+                    <field name="total_repair_untaxed_expense" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+
+        <record id="service_registration_action_id" model="ir.actions.act_window">
+            <field name="name">Vehicle Service Work Orders</field>
+            <field name="res_model">vehicle.repair.work.order</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+
+        <record id="create_work_order_action_id" model="ir.actions.act_window">
+            <field name="name">Vehicle Service Work Order</field>
+            <field name="res_model">vehicle.repair.work.order</field>
+            <field name="view_mode">form</field>
+        </record>
+
+
+        <menuitem id="menu_vehicle_service_registration" name="All Work Orders" parent="menu_vehicle_service"
+                  action="service_registration_action_id" sequence="2"/>
+    </data>
+</odoo>

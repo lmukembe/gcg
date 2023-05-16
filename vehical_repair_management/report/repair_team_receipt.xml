@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="team_receipt_template">
+            <t t-call="web.internal_layout">
+                <t t-set="doc" t-value="doc.with_context(lang=doc.customer_id.lang)"/>
+                <div class="container">
+                    <div class="row pb-3" style="margin-left: -30px;">
+                        <div class="col-4 py-3 " style="background:#d8d9dd; padding-left: 30px;">
+                            <h4 class="mb-0" style="font-weight:bold;">Order No:
+                                <span t-field="doc.name"/>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col">
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <td>
+                                        <span style="font-weight:bold;">Service Team</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.repair_team_ids"/>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Team Leader</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.manager_ids"/>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Priority</span>
+                                    </td>
+                                    <td>
+                                        <style>
+                                            .checked {
+                                              color: orange;
+                                            }
+                                        </style>
+                                        <t t-foreach="range(3)" t-as="i">
+                                            <t t-if="i &lt; int(doc.priority)">
+                                                 <span class="fa fa-star checked"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="fa fa-star"/>
+                                            </t>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col">
+                            <h5 style="font-weight:bold;">Vehicle Description</h5>
+                            <hr style="background:green"/>
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <td>
+                                        <span style="font-weight:bold;">Vehicle Type</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.vehicle_type_id"/>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Brand / Make</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.brand_id"/>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Model</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.model"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <span style="font-weight:bold;">Color</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.color"/>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Transmission Type</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.transmission_type"/>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Year Of Mfg.</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.year_of_manufacturing"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <span style="font-weight:bold;">Warranty</span>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.warranty_date">
+                                            <span class="text-success">
+                                                <i class="fa fa-check"/>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-danger">
+                                                <i class="fa fa-times"/>
+                                            </span>
+                                        </t>
+
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Insurance</span>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.insurance">
+                                            <span class="text-success">
+                                                <i class="fa fa-check"/>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-danger">
+                                                <i class="fa fa-times"/>
+                                            </span>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Pollution</span>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.pollution">
+                                            <span class="text-success">
+                                                <i class="fa fa-check"/>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-danger">
+                                                <i class="fa fa-times"/>
+                                            </span>
+                                        </t>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <span style="font-weight:bold;">Odometer Reading</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.odometer_reading"/>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Fuel Level</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.fuel_value"/>
+                                        <span t-field="doc.fuel_gauge_unit"/>
+                                    </td>
+                                    <td>
+                                        <span style="font-weight:bold;">Fuel Type</span>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.fuel_type_id"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row pb-3" t-if="doc.issue">
+                        <div class="col">
+                            <h5 style="font-weight:bold;">Issue in the Vehicle</h5>
+                            <hr style="background:green"/>
+                            <p t-field="doc.issue"/>
+                        </div>
+                    </div>
+
+                    <t t-if="doc.work_sheet_ids">
+                        <div class="row pb-3">
+                            <div class="col">
+                                <h5 style="font-weight:bold;">Work Sheet</h5>
+                                <hr style="background:green"/>
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>Mechanic</th>
+                                            <th>Service</th>
+                                            <th>Description</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="doc.work_sheet_ids" t-as="w">
+                                            <tr>
+                                                  <td>
+                                                    <span t-field="w.mechanic_id"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="w.service_id"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="w.description"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-field="w.qty"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                    <t t-if="doc.used_part_ids">
+                        <div class="row pb-3">
+                            <div class="col">
+                                <h5 style="font-weight:bold;">Parts Used</h5>
+                                <hr style="background:green"/>
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="doc.used_part_ids" t-as="s">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="s.part_id"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="s.description"/>
+                                                </td>
+                                                <td class="text-right">
+                                                    <span t-field="s.quantity"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                    <div class="row py-3">
+                        <div class="col-3" style="font-weight:bold">
+                            Authorized Signature
+                        </div>
+                        <div class="col-3 text-muted pt-3" style="">
+                            ________________
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="report_repair_team_receipt">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="vehical_repair_management.team_receipt_template" t-lang="doc.customer_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+<!--        <report id="action_repair_team_receipt"-->
+<!--                string="Service Team Receipt"-->
+<!--                model="vehicle.repair.work.order"-->
+<!--                report_type="qweb-pdf"-->
+<!--                file="vehical_repair_management.report_repair_team_receipt"-->
+<!--                name="vehical_repair_management.report_repair_team_receipt"-->
+<!--                print_report_name="'Service Team Receipt - %s' % (object.name)"-->
+<!--        />-->
+
+         <record id="action_repair_team_receipt" model="ir.actions.report">
+            <field name="name">Service Team Receipt</field>
+            <field name="model">vehicle.repair.work.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">vehical_repair_management.report_repair_team_receipt</field>
+            <field name="report_file">vehical_repair_management.report_repair_team_receipt</field>
+            <field name="print_report_name">'Service Team Receipt - %s' % (object.name)</field>
+<!--            <field name="attachment">(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')</field>-->
+            <field name="binding_model_id" ref="model_vehicle_repair_work_order"/>
+            <field name="binding_type">report</field>
+         </record>
+    </data>
+</odoo>
