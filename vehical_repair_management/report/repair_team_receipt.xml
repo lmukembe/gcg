@@ -175,6 +175,13 @@
                         <div class="col">
                             <h5 style="font-weight:bold;">Issue in the Vehicle</h5>
                             <hr style="background:green"/>
+                            <p t-if="doc.issue_unknown">
+                                <b>Not sure what’s wrong? </b>
+                                <span class="text-success">
+                                    <i class="fa fa-check"/>
+                                </span>
+
+                            </p>
                             <p t-field="doc.issue"/>
                         </div>
                     </div>
@@ -205,7 +212,7 @@
                                                 <td>
                                                     <span t-field="w.description"/>
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <span t-field="w.qty"/>
                                                 </td>
                                             </tr>
@@ -238,7 +245,7 @@
                                                 <td>
                                                     <span t-field="s.description"/>
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <span t-field="s.quantity"/>
                                                 </td>
                                             </tr>

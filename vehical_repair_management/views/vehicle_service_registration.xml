@@ -29,6 +29,7 @@
                     <field name="date"/>
                     <field name="repair_team_ids" widget="many2many_tags"/>
                     <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
                 </tree>
             </field>
         </record>
@@ -51,7 +52,7 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box" groups="base.group_user" >
+                        <div class="oe_button_box" name="button_box" groups="base.group_user">
                             <button name="sale_order_view" type="object" class="oe_stat_button" states="done"
                                     icon="fa-pencil-square-o">
                                 <div class="o_form_field o_stat_info">
@@ -66,7 +67,7 @@
                         </div>
 
                         <label for="plate_no"/>
-                        <div style="width:30%">
+                        <div style="width:50%">
                             <field name="plate_no" required="1" attrs="{'readonly': [('state', '=', 'done')]}"
                                    placeholder="eg. MH12RN1289"/>
                             <span class="text-success oe_edit_only"
@@ -100,11 +101,11 @@
                         <field name="issue_unknown"/>
                         <div attrs="{'invisible': [('issue_unknown', '=', False)]}">
                             <span>Not sure what’s wrong? No problem, the Boys have you covered. Just bring your vehicle
-                                in and we’ll take care of the rest.
+                                in, and we’ll take care of the rest.
                             </span>
                         </div>
-                        <group string="Issue">
-                            <field name="issue" nolabel="1" attrs="{'readonly': [('state', '=', 'done')]}"
+                        <group string="Issues Described By The Client">
+                            <field name="issue" attrs="{'readonly': [('state', '=', 'done')]}"
                                    placeholder="Work Description"/>
                         </group>
 
@@ -211,18 +212,25 @@
                                         <field name="odometer_reading" attrs="{'readonly': [('state', '=', 'done')]}"/>
                                     </group>
                                     <group>
-                                        <label for="fuel_value"/>
+                                        <field class="oe_edit_only" name="max_fuel_value"
+                                               attrs="{'readonly': [('state', '=', 'done')]}"/>
+                                        <label class="oe_edit_only" for="fuel_value"/>
                                         <div class="o_row">
                                             <field class="oe_edit_only" name="fuel_value"
                                                    attrs="{'readonly': [('state', '=', 'done')]}"/>
                                             <field class="oe_edit_only" name="fuel_gauge_unit"
                                                    placeholder="eg. % or Liter or Unit etc."
                                                    attrs="{'readonly': [('state', '=', 'done')]}"/>
-                                            <field class="oe_read_only" name="fuel_gauge"
-                                                   attrs="{'readonly': [('state', '=', 'done')]}"
-                                                   widget="gauge"
-                                                   options="{'label_field': 'fuel_gauge_unit'}"/>
+                                            <!--                                            <field class="oe_read_only" name="fuel_gauge"-->
+                                            <!--                                                   attrs="{'readonly': [('state', '=', 'done')]}"-->
+                                            <!--                                                   widget="gauge"-->
+                                            <!--                                                   options="{'label_field': 'fuel_gauge_unit'}"/>-->
+
                                         </div>
+                                        <field name="fuel_gauge" widget="gauge" class="oe_read_only" string=""
+                                               attrs="{'readonly': [('state', '=', 'done')]}"
+                                               options="{'max_field': 'max_fuel_value','label_field': 'fuel_gauge_unit', 'style': 'width: 160px; height: 120px;', 'title': ''}"/>
+
                                         <field name="fuel_type_id" attrs="{'readonly': [('state', '=', 'done')]}"
                                                options="{'no_open': True}"/>
                                     </group>
@@ -238,6 +246,8 @@
                                 </group>
                                 <group>
                                     <field name="create_uid" readonly="1"/>
+                                    <field name="company_id" options="{'no_create': True}"
+                                           groups="base.group_multi_company"/>
                                 </group>
                             </page>
 
@@ -251,7 +261,8 @@
                                                 <div t-attf-class="oe_kanban_card oe_kanban_global_click"
                                                      style="width:100px; height:100px;">
                                                     <div class="o_dropdown_kanban dropdown">
-                                                        <a class="dropdown-toggle btn"  role="button"  data-toggle="dropdown" href="#">
+                                                        <a class="dropdown-toggle btn" role="button"
+                                                           data-toggle="dropdown" href="#">
                                                             <span class="fa fa-ellipsis-v" title="Delete"/>
                                                         </a>
                                                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -282,7 +293,8 @@
                                                 <div t-attf-class="oe_kanban_card oe_kanban_global_click"
                                                      style="width:100px; height:100px;">
                                                     <div class="o_dropdown_kanban dropdown">
-                                                        <a class="dropdown-toggle btn" role="button" data-toggle="dropdown" href="#">
+                                                        <a class="dropdown-toggle btn" role="button"
+                                                           data-toggle="dropdown" href="#">
                                                             <span class="fa fa-ellipsis-v" title="Delete"/>
                                                         </a>
                                                         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -385,6 +397,9 @@
                     <filter name="groupby_customer" string="Customer" context="{'group_by': 'customer_id'}"/>
                     <filter name="groupby_date" string="Received Date" context="{'group_by': 'date'}"/>
                     <filter name="groupby_plate" string="Plate Number" context="{'group_by': 'plate_no'}"/>
+                    <filter string="Company" name="company" groups="base.group_multi_company"
+                            context="{'group_by':'company_id'}"/>
+
                 </search>
             </field>
         </record>

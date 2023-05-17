@@ -19,5 +19,12 @@
             <field name="implied_ids" eval="[(4, ref('group_vehicle_repair_user'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
+
+        <record model="ir.rule" id="vehicle_repair_work_order">
+            <field name="name">Work Order multi-company</field>
+            <field name="model_id" ref="model_vehicle_repair_work_order"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
     </data>
 </odoo>

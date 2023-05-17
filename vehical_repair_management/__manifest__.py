@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Vehicle Repair Management',
-    'version': '1.0',
+    'version': '1.1',
     'summary': 'Allows you to easily manage your vehicle repair workshop.',
     'sequence': 30,
     'description': """This module will help you to manage your vehicle repair / service workshop very easily.
@@ -30,7 +30,7 @@
     """,
     'category': 'Management',
     'author': 'ErpMstar Solutions',
-    'depends': ['hr', 'sale_management'],
+    'depends': ['hr', 'sale_management', 'web_kanban_gauge'],
     'data': [
         'security/security_group.xml',
         'security/ir.model.access.csv',

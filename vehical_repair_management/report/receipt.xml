@@ -180,12 +180,12 @@
 
                     <div class="row pb-3" t-if="doc.accessories_ids">
                         <div class="col">
-<!--                            <div  style="page-break-before:always;">-->
+                            <!--                            <div  style="page-break-before:always;">-->
 
 
                             <h5 style="font-weight:bold;">Accessories Available In Vehicle</h5>
                             <hr style="background:green"/>
-<!--                            </div>-->
+                            <!--                            </div>-->
                             <table class="table table-bordered table-sm">
                                 <thead>
                                     <tr>
@@ -214,10 +214,10 @@
                     </div>
 
                     <t t-if="doc.work_sheet_ids">
-                        <div class="row pb-3"  style="page-break-inside: avoid">
+                        <div class="row pb-3" style="page-break-inside: avoid">
                             <div class="col">
-                                <div >
-                                    <h5 style="font-weight:bold; break-inside: avoid" >Work Sheet</h5>
+                                <div>
+                                    <h5 style="font-weight:bold; break-inside: avoid">Work Sheet</h5>
                                     <hr style="background:green"/>
                                 </div>
                                 <table class="table table-bordered table-sm">
@@ -245,15 +245,15 @@
                                                     <span t-field="w.time" t-options="{'widget': 'float_time'}"/>
                                                     Minutes
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <span t-field="w.cost"
                                                           t-options='{"widget": "monetary", "display_currency": w.currency_id}'/>
                                                     <span t-field="w.abstract_uom"/>
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <span t-field="w.qty"/>
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <span t-field="w.subtotal"
                                                           t-options='{"widget": "monetary", "display_currency": w.currency_id}'/>
                                                 </td>
@@ -290,14 +290,14 @@
                                                     <span t-field="s.description"/>
                                                 </td>
 
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <span t-field="s.unit_price"
                                                           t-options='{"widget": "monetary", "display_currency": s.currency_id}'/>
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <span t-field="s.quantity"/>
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <span t-field="s.subtotal"
                                                           t-options='{"widget": "monetary", "display_currency": s.currency_id}'/>
                                                 </td>
@@ -312,13 +312,13 @@
 
                     <div class="clearfix">
                         <div id="total" class="row" name="total">
-                            <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                            <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-5'} ms-auto">
                                 <table class="table table-sm">
                                     <tr class="border-black o_subtotal" style="">
                                         <td>
                                             <strong>Work Sheet Expense</strong>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-end">
                                             <span t-field="doc.work_sheet_expense"
                                                   t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                         </td>
@@ -327,7 +327,7 @@
                                         <td>
                                             <strong>Used Part Expense</strong>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-end">
                                             <span t-field="doc.used_part_expense"
                                                   t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                         </td>
@@ -336,7 +336,7 @@
                                         <td>
                                             <strong>Estimated Repair Untaxed Expense</strong>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-end">
                                             <span t-field="doc.total_repair_untaxed_expense"
                                                   t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
                                         </td>
@@ -374,25 +374,26 @@
             </t>
         </template>
 
-<!--        <report id="action_report_drop_off_receipt"-->
-<!--                string="Work Order Client Receipt"-->
-<!--                model="vehicle.repair.work.order"-->
-<!--                report_type="qweb-pdf"-->
-<!--                file="vehical_repair_management.report_drop_off_receipt"-->
-<!--                name="vehical_repair_management.report_drop_off_receipt"-->
-<!--                print_report_name="'Vehicle Work Order - %s' % (object.name)"-->
-<!--                paperformat="vehical_repair_management.paperformat_vehicle_receipt"-->
-<!--        />-->
+        <!--        <report id="action_report_drop_off_receipt"-->
+        <!--                string="Work Order Client Receipt"-->
+        <!--                model="vehicle.repair.work.order"-->
+        <!--                report_type="qweb-pdf"-->
+        <!--                file="vehical_repair_management.report_drop_off_receipt"-->
+        <!--                name="vehical_repair_management.report_drop_off_receipt"-->
+        <!--                print_report_name="'Vehicle Work Order - %s' % (object.name)"-->
+        <!--                paperformat="vehical_repair_management.paperformat_vehicle_receipt"-->
+        <!--        />-->
 
-          <record id="action_report_drop_off_receipt" model="ir.actions.report">
+        <record id="action_report_drop_off_receipt" model="ir.actions.report">
             <field name="name">Work Order Client Receipt</field>
             <field name="model">vehicle.repair.work.order</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">vehical_repair_management.report_drop_off_receipt</field>
             <field name="report_file">vehical_repair_management.report_drop_off_receipt</field>
             <field name="print_report_name">'Vehicle Work Order - %s' % (object.name)</field>
-<!--            <field name="attachment">(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')</field>-->
+            <!--            <field name="attachment">(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')</field>-->
             <field name="binding_model_id" ref="model_vehicle_repair_work_order"/>
+            <field name="paperformat_id" ref="vehical_repair_management.paperformat_vehicle_receipt"/>
             <field name="binding_type">report</field>
 
         </record>
