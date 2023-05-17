@@ -101,6 +101,8 @@
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='category_ids']" position="after">
+                    <field name="is_mechanic" invisible="1"/>
+
                     <div name="options" groups="base.group_user">
                         <div>
                             <field name="is_mechanic" class="ml-3"/>
@@ -126,7 +128,7 @@
                 <xpath expr="//div[hasclass('settings')]" position="inside">
                     <div class="app_settings_block" data-string="vehical_repair_management" string="Vehicle Service"
                          data-key="vehical_repair_management">
-                         <h2>Send Notification Mail</h2>
+                        <h2>Send Notification Mail</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-xs-12 col-md-6 o_setting_box">
                                 <div class="o_setting_left_pane">
@@ -147,7 +149,8 @@
                                 <div class="o_setting_right_pane">
                                     <label for="send_email_when_customer_is_confirm"/>
                                     <div class="text-muted">
-                                        Send a Mail To Customer When Vehicle Service Work Order is Confirmed and Completed
+                                        Send a Mail To Customer When Vehicle Service Work Order is Confirmed and
+                                        Completed
                                     </div>
                                 </div>
                             </div>
@@ -490,7 +493,8 @@
             <field name="view_mode">graph,pivot</field>
         </record>
 
-        <menuitem id="vehicle_service_root_menu" name="Vehicle Service" groups="group_vehicle_repair_user"/>
+        <menuitem id="vehicle_service_root_menu" name="Vehicle Service" groups="group_vehicle_repair_user"
+                  web_icon="vehical_repair_management,static/description/icon.png"/>
         <menuitem id="menu_vehicle_service" name="Vehicle" parent="vehicle_service_root_menu" sequence="1"/>
 
         <menuitem id="menu_reporting" name="Reporting" parent="vehicle_service_root_menu" sequence="2"

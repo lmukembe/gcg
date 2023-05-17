@@ -46,6 +46,7 @@ class VehicleRepairWorkOrder(models.Model):
     last_oil_change_date = fields.Date("Last Change Oil")
     odometer_reading = fields.Float()
     fuel_value = fields.Integer(string='Fuel Level')
+    max_fuel_value = fields.Integer(string='Max Fuel Limit')
     fuel_gauge = fields.Integer(related="fuel_value")
     fuel_gauge_unit = fields.Char()
     fuel_type_id = fields.Many2one('fuel.type', string='Fuel Type', ondelete="restrict")
@@ -56,7 +57,9 @@ class VehicleRepairWorkOrder(models.Model):
     accessories_ids = fields.One2many('vehicle.accessories', 'repair_work_order_id',
                                       string='Accessories Available In Vehicle')
     sale_order_id = fields.Many2one("sale.order", string='Sale Oder Id', copy=False)
-    currency_id = fields.Many2one("res.currency", default=lambda self: self.env.user.company_id.currency_id)
+    currency_id = fields.Many2one("res.currency", default=lambda self: self.env.company.currency_id)
+    company_id = fields.Many2one('res.company', 'Company', required=True, index=True,
+                                 default=lambda self: self.env.company)
     work_sheet_expense = fields.Float(compute="compute_repair_expense", tracking=True, store=True)
     used_part_expense = fields.Float(compute="compute_repair_expense", tracking=True, store=True)
     total_repair_untaxed_expense = fields.Float(compute="compute_repair_expense", tracking=True,
@@ -254,11 +257,12 @@ class VehicleRepairWorkOrder(models.Model):
 
     def send_email_user(self):
         res_data = self.env['ir.config_parameter'].sudo()
-        send_email_confirm = res_data.get_param('vehical_repair_management.send_email_when_confirm', default=False)
-        send_email_done = res_data.get_param('vehical_repair_management.send_email_when_done', default=False)
-        send_email_to_customer = res_data.get_param('vehical_repair_management.send_email_when_customer_is_confirm',
-                                                    default=False)
-
+        send_email_confirm = bool(
+            res_data.get_param('vehical_repair_management.send_email_when_confirm', default=False))
+        send_email_done = bool(res_data.get_param('vehical_repair_management.send_email_when_done', default=False))
+        send_email_to_customer = bool(
+            res_data.get_param('vehical_repair_management.send_email_when_customer_is_confirm',
+                               default=False))
         if send_email_to_customer:
             html_body = "Dear Customer<br/>"
             html_body += "Your Vehicle Service Work Order Ref# " + str(
@@ -281,7 +285,9 @@ class VehicleRepairWorkOrder(models.Model):
                 self.send_email(html_body, user)
 
     def send_email(self, html_body, user):
-        pdf = self.env.ref('vehical_repair_management.action_report_drop_off_receipt')._render_qweb_pdf(self.id)[0]
+        # pdf = self.env.ref('vehical_repair_management.action_report_drop_off_receipt')._render_qweb_pdf(self.id)[0]
+        pdf = self.env['ir.actions.report']._render_qweb_pdf("vehical_repair_management.action_report_drop_off_receipt",
+                                                             res_ids=self.id)[0]
         bounce_mail_values = {'body_html': html_body, 'subject': "Vehicle Service Work Order, Ref#: %s" % self.name,
                               'email_to': user.email, 'auto_delete': True, 'email_from': self.env.user.email_formatted,
                               'attachment_ids': [(0, 0, {
@@ -293,7 +299,6 @@ class VehicleRepairWorkOrder(models.Model):
                                   'type': 'binary',
                                   'store_fname': 'Vehicle Service Work Order'
                               })]}
-
         self.env['mail.mail'].create(bounce_mail_values).send()
 
     def unlink(self):
