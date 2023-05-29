@@ -79,7 +79,14 @@
                                 New Vehicle, It will be Saved
                             </span>
                         </div>
-
+                        <group>
+                            <group>
+                                <field name="vin_number"/>
+                            </group>
+                            <group>
+                                <field name="motor_number"/>
+                            </group>
+                        </group>
                         <group>
                             <group string="Customer" name="customer_id">
                                 <field name="customer_id" required="1" attrs="{'readonly': [('state', '=', 'done')]}"/>

@@ -102,7 +102,6 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='category_ids']" position="after">
                     <field name="is_mechanic" invisible="1"/>
-
                     <div name="options" groups="base.group_user">
                         <div>
                             <field name="is_mechanic" class="ml-3"/>

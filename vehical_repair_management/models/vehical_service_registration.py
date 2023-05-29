@@ -25,6 +25,8 @@ class VehicleRepairWorkOrder(models.Model):
     repair_team_ids = fields.Many2many("vehicle.repair.team", string="Service Team")
     team_member_ids = fields.Many2many("hr.employee")
     plate_no = fields.Char(string='Plate Number')
+    vin_number = fields.Char()
+    motor_number = fields.Char()
     plate_exist = fields.Boolean()
     before_service_image_ids = fields.One2many('vehicle.service.image', 'registration_id2',
                                                string='Before Service Image')
