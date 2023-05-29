@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record  id="add_field_compte_tiers" model="ir.ui.view">
+            <field name="name">add.field.compte.tier</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='accounting_entries']" position="inside">
+                    <field name="compte_tiers"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
